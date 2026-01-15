@@ -1,5 +1,4 @@
 import opendatasets as od
-import pandas as pd
 import os
 
 data_dir = 'home-credit-default-risk'
