@@ -84,5 +84,8 @@ def prepare_data(df, drop=False, threshold=0.5, encode=True):
     
     if encode:  
         X = pd.get_dummies(X, dummy_na=True)
+    else:
+        for col in X.select_dtypes(include=['object']).columns:
+            X[col] = X[col].astype('category')
     
     return X, y

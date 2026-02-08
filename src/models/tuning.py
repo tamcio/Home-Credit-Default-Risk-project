@@ -152,6 +152,7 @@ def _build_model(trial, model_type, use_gpu=False):
             'reg_alpha': trial.suggest_float('reg_alpha', 1e-8, 10.0, log=True),
             'reg_lambda': trial.suggest_float('reg_lambda', 1e-8, 10.0, log=True),
             'scale_pos_weight': trial.suggest_float('scale_pos_weight', 1.0, 15.0),
+            'enable_categorical': True,
             'random_state': 42,
             'eval_metric': 'auc',
             'verbosity': 0
@@ -196,6 +197,7 @@ def build_best_pipeline(study, model_type, use_gpu=False):
     if model_type == 'xgboost':
         best_params['verbosity'] = 0
         best_params['eval_metric'] = 'auc'
+        best_params['enable_categorical'] = True
         if use_gpu:
             best_params['tree_method'] = 'hist'
             best_params['device'] = 'cuda'
