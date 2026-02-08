@@ -43,6 +43,7 @@ def _bureau_feature_engineering(bureau):
     
     bureau['DEBT_CREDIT_RATIO'] = bureau['AMT_CREDIT_SUM_DEBT'] / (bureau['AMT_CREDIT_SUM'] + 1.0)
     bureau['CREDIT_DURATION'] = bureau['DAYS_CREDIT_ENDDATE'] - bureau['DAYS_CREDIT']
+    bureau['EARLY_REPAYMENT'] = (bureau['DAYS_ENDDATE_FACT'] < bureau['DAYS_CREDIT_ENDDATE']).astype(int)
     
     return bureau
 

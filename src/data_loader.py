@@ -1,19 +1,28 @@
 import pandas as pd
 import numpy as np
 from src.features.bureau import get_bureau_features
+from src.features.application import application_feature_engineering
 
 
-def merge_data(data_path='', handle_outliers=True):
+def load_data(data_path='', handle_outliers=False, add_features=False, merge_bureau=False, merge_previous=False):
     app_train = pd.read_csv(f'{data_path}/application_train.csv')
-    bureau_feats = get_bureau_features(data_path)
     
-    df = app_train.merge(bureau_feats, on='SK_ID_CURR', how='left')
+    if add_features:
+        app_train = application_feature_engineering(app_train)
+
+    if merge_bureau:
+        bureau_feats = get_bureau_features(data_path)
+        app_train = app_train.merge(bureau_feats, on='SK_ID_CURR', how='left')
+
+    if merge_previous:
+        prev_feats = get_previous_features(data_path) # TODO
+        app_train = app_train.merge(prev_feats, on='SK_ID_CURR', how='left')
     
     if handle_outliers:
-        df = remove_outliers(df)
+        app_train = remove_outliers(app_train)
     
-    print(f"df shape: {df.shape}")
-    return df
+    print(f"df shape: {app_train.shape}")
+    return app_train
 
 
 def remove_outliers(df, verbose=True):
@@ -62,3 +71,18 @@ def remove_outliers(df, verbose=True):
     
     return df
 
+def prepare_data(df, drop=False, threshold=0.5, encode=True):
+    df_temp = df.copy()
+    
+    if drop:
+        missing = df_temp.isna().mean()
+        drop_cols = missing[missing > threshold].index
+        df_temp = df_temp.drop(columns=drop_cols)
+    
+    y = df_temp['TARGET']
+    X = df_temp.drop('TARGET', axis=1)
+    
+    if encode:  
+        X = pd.get_dummies(X, dummy_na=True)
+    
+    return X, y
