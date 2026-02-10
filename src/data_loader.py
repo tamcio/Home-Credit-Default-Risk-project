@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from src.features.bureau import get_bureau_features
 from src.features.application import application_feature_engineering
+from src.features.previous import get_previous_features
 
 
 def load_data(data_path='', handle_outliers=False, add_features=False, merge_bureau=False, merge_previous=False):
